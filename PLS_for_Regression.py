@@ -47,3 +47,12 @@ def DQR(data):
 #%% OBTAINING THE DATA QUALITY REPORT
 report = DQR(data)
 report
+# NO MISING VALUES
+
+#%% ONE-HOT FOR VARIABLE SEX
+sex_dummies = pd.get_dummies(data['Sex'], prefix='sex', drop_first=True)
+
+data = pd.concat([sex_dummies, data], axis=1)
+
+data = data.drop('Sex', axis=1)
+#%% SPLIT TRAINING AND TESTING DATASETS
