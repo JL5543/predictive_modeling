@@ -1,5 +1,7 @@
 #%% IMPORT NECESSARY LIBRARIES
 import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
 
 #%% IMPORT THE DATASET
 ruta = 'C:/Users/jsramirez/datsets_pm'
@@ -56,3 +58,10 @@ data = pd.concat([sex_dummies, data], axis=1)
 
 data = data.drop('Sex', axis=1)
 #%% SPLIT TRAINING AND TESTING DATASETS
+X, y = data.iloc[:,:-1], data.iloc[:,-1]
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+#%% TRAIN THE LINEAR MODEL
+model = LinearRegression()
+model.fit(X_train, y_train)
