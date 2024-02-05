@@ -2,8 +2,18 @@
 import pandas as pd
 
 #%% IMPORT THE DATASET
-ruta = 'C:\Users\jsramirez\datsets_pm'
-data = pd.read_csv(ruta+'\')
+ruta = 'C:/Users/jsramirez/datsets_pm'
+data = pd.read_csv(ruta+'/abalone.data', header=None)
+
+with open(ruta+'/abalone.names','r') as file:
+    columns = file.read()
+
+print(columns)
+
+names=['Sex','Lenght', 'Diameter', 'Height', 'Whole weight',
+       'Shucked weight', 'Viscera weight', 'Shell weight', 'Rings']
+
+data.columns = names
 
 #%% DATA QUALITY REPORT
 def DQR(data):
