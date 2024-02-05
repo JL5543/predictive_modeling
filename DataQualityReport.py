@@ -1,5 +1,9 @@
-# IMPORT NECESSARY LIBRARIES
+#%% IMPORT NECESSARY LIBRARIES
 import pandas as pd
+
+#%% IMPORT THE DATASET
+ruta = 'C:\Users\jsramirez\datsets_pm'
+data = pd.read_csv(ruta+'\')
 
 #%% DATA QUALITY REPORT
 def DQR(data):
