@@ -1,7 +1,9 @@
 #%% IMPORT NECESSARY LIBRARIES
+import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
 
 #%% IMPORT THE DATASET
 ruta = 'C:/Users/jsramirez/datsets_pm'
@@ -65,3 +67,11 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_
 #%% TRAIN THE LINEAR MODEL
 model = LinearRegression()
 model.fit(X_train, y_train)
+y_train_predict = model.predict(X_train)
+y_test_predict = model.predict(X_test)
+rmse_train = np.sqrt(mean_squared_error(y_train, y_train_predict))
+rmse_test = np.sqrt(mean_squared_error(y_test, y_test_predict))
+print(f'El RMSE para el conjunto de entrenamiento es de {rmse_train}')
+print(f'El RMSE para el conjunto de prueba es de {rmse_test}')
+
+# %%
