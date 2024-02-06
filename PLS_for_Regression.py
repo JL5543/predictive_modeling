@@ -6,6 +6,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.decomposition import PCA
 
 #%% IMPORT THE DATASET
 ruta = 'C:/Users/jsramirez/datsets_pm'
@@ -102,4 +103,33 @@ print(f'El RMSE para el conjunto de entrenamiento es de {rmse_train2:.5f}')
 print(f'El RMSE para el conjunto de prueba es de {rmse_test2:.5f}')
 
 
-# %%
+#%% dimensionality reduction by PCA
+pca=PCA().fit(X)
+
+plt.plot(np.cumsum(pca.explained_variance_ratio_))
+plt.xlabel('Numero de componentes')
+plt.ylabel('Varianza explicada acumulada')
+plt.show()
+
+ACP = PCA(n_components=2)
+data3 = pd.DataFrame(ACP.fit_transform(X), columns=['x1', 'x2'])
+data3['y'] = y 
+
+
+#%% model with PCA
+
+X3, y3 = data3.iloc[:,:-1], data3.iloc[:,-1]
+
+X3_train, X3_test, y3_train, y3_test = train_test_split(X3, y3, test_size=0.3, random_state=42)
+
+
+model3 = LinearRegression()
+model3.fit(X3_train, y3_train)
+y3_train_predict = model3.predict(X3_train)
+y3_test_predict = model3.predict(X3_test)
+rmse_train3 = np.sqrt(mean_squared_error(y3_train, y3_train_predict))
+rmse_test3 = np.sqrt(mean_squared_error(y3_test, y3_test_predict))
+print(f'El RMSE para el conjunto de entrenamiento es de {rmse_train3:.5f}')
+print(f'El RMSE para el conjunto de prueba es de {rmse_test3:.5f}')
+
+# %% PLS for Regression
