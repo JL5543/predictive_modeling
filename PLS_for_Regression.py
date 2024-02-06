@@ -58,11 +58,11 @@ report
 #%% ONE-HOT FOR VARIABLE SEX
 sex_dummies = pd.get_dummies(data['Sex'], prefix='sex', drop_first=True)
 
-data = pd.concat([sex_dummies, data], axis=1)
+data1 = pd.concat([sex_dummies, data], axis=1)
 
-data = data.drop('Sex', axis=1)
+data1 = data1.drop('Sex', axis=1)
 #%% SPLIT TRAINING AND TESTING DATASETS
-X, y = data.iloc[:,:-1], data.iloc[:,-1]
+X, y = data1.iloc[:,:-1], data1.iloc[:,-1]
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
@@ -73,12 +73,33 @@ y_train_predict = model.predict(X_train)
 y_test_predict = model.predict(X_test)
 rmse_train = np.sqrt(mean_squared_error(y_train, y_train_predict))
 rmse_test = np.sqrt(mean_squared_error(y_test, y_test_predict))
-print(f'El RMSE para el conjunto de entrenamiento es de {rmse_train}')
-print(f'El RMSE para el conjunto de prueba es de {rmse_test}')
+print(f'El RMSE para el conjunto de entrenamiento es de {rmse_train:.5f}')
+print(f'El RMSE para el conjunto de prueba es de {rmse_test:.5f}')
 
 #%% CORRELATION MATRIX
-Corr_matrix = data.corr()
+Corr_matrix = data1.corr()
 plt.figure(figsize=(10,8))
 sns.heatmap(Corr_matrix, annot=True, cmap='Blues', fmt='.2f')
 plt.show()
-#%% FEATURE SELECTION 
+
+#%% FEATURE SELECTION
+#Eliminamos Lenght por diameter y shucked weight y viscera weight
+
+data2 = data1.drop(['sex_M', 'Lenght', 'Shucked weight', 'Viscera weight'], axis=1)
+
+X2, y2 = data2.iloc[:,:-1], data2.iloc[:,-1]
+
+X2_train, X2_test, y2_train, y2_test = train_test_split(X2, y2, test_size=0.3, random_state=42)
+
+#%% TRAIN THE LINEAR MODEL
+model2 = LinearRegression()
+model2.fit(X2_train, y2_train)
+y2_train_predict = model2.predict(X2_train)
+y2_test_predict = model2.predict(X2_test)
+rmse_train2 = np.sqrt(mean_squared_error(y2_train, y2_train_predict))
+rmse_test2 = np.sqrt(mean_squared_error(y2_test, y2_test_predict))
+print(f'El RMSE para el conjunto de entrenamiento es de {rmse_train2:.5f}')
+print(f'El RMSE para el conjunto de prueba es de {rmse_test2:.5f}')
+
+
+# %%
