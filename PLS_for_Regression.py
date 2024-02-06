@@ -4,6 +4,8 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 #%% IMPORT THE DATASET
 ruta = 'C:/Users/jsramirez/datsets_pm'
@@ -74,4 +76,9 @@ rmse_test = np.sqrt(mean_squared_error(y_test, y_test_predict))
 print(f'El RMSE para el conjunto de entrenamiento es de {rmse_train}')
 print(f'El RMSE para el conjunto de prueba es de {rmse_test}')
 
-# %%
+#%% CORRELATION MATRIX
+Corr_matrix = data.corr()
+plt.figure(figsize=(10,8))
+sns.heatmap(Corr_matrix, annot=True, cmap='Blues', fmt='.2f')
+plt.show()
+#%% FEATURE SELECTION 
