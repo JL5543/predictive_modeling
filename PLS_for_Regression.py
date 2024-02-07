@@ -149,4 +149,23 @@ plt.xlabel('Numero de componentes')
 plt.ylabel('MSE')
 plt.show()
 
+#%% Apply linear regression
+
+pls = PLSRegression(n_components=6)
+pls.fit(X_train, y_train)
+y4_train_predict = pls.predict(X_train)
+y4_test_predict = pls.predict(X_test)
+rmse_train4 = np.sqrt(mean_squared_error(y_train, y4_train_predict))
+rmse_test4 = np.sqrt(mean_squared_error(y_test, y4_test_predict))
+print(f'El RMSE para el conjunto de entrenamiento es de {rmse_train4:.5f}')
+print(f'El RMSE para el conjunto de prueba es de {rmse_test4:.5f}')
+
+#%% Comparison of the models
+rmse_list = [(rmse_train,rmse_train2,rmse_train3,rmse_train4),(rmse_test,rmse_test2,rmse_test3,rmse_test4)]
+cols = ['All variables','Feature selection', 'PCA', 'PLS']
+
+Table = pd.DataFrame(rmse_list, columns=cols)
+datasts = ['train', 'test']
+Table.insert(0, 'dataset', datasts)
+
 #%%
