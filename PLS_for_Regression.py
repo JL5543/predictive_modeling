@@ -1,12 +1,13 @@
 #%% IMPORT NECESSARY LIBRARIES
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, cross_val_score, KFold
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.decomposition import PCA
+from sklearn.cross_decomposition import PLSRegression
 
 #%% IMPORT THE DATASET
 ruta = 'C:/Users/jsramirez/datsets_pm'
@@ -132,4 +133,20 @@ rmse_test3 = np.sqrt(mean_squared_error(y3_test, y3_test_predict))
 print(f'El RMSE para el conjunto de entrenamiento es de {rmse_train3:.5f}')
 print(f'El RMSE para el conjunto de prueba es de {rmse_test3:.5f}')
 
-# %% PLS for Regression
+#%% n_components for PLS
+num_components_list = range(1, 10)
+cv = KFold(n_splits=5, shuffle=True, random_state=42)
+scores = []
+mse_scores= []
+for  num_components in num_components_list:
+    pls = PLSRegression(n_components=num_components)
+    score = cross_val_score(pls, X_train, y_train, cv=cv, scoring='neg_mean_squared_error')
+    mse_scores.append(score.mean())
+optimal_n_components = num_components_list[np.argmax(mse_scores)]
+
+plt.plot(range(1, 10),mse_scores)
+plt.xlabel('Numero de componentes')
+plt.ylabel('MSE')
+plt.show()
+
+#%%
