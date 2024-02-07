@@ -8,15 +8,12 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.decomposition import PCA
 from sklearn.cross_decomposition import PLSRegression
+from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import MinMaxScaler
 
 #%% IMPORT THE DATASET
 ruta = 'C:/Users/jsramirez/datsets_pm'
 data = pd.read_csv(ruta+'/abalone.data', header=None)
-
-with open(ruta+'/abalone.names','r') as file:
-    columns = file.read()
-
-print(columns)
 
 names=['Sex','Lenght', 'Diameter', 'Height', 'Whole weight',
        'Shucked weight', 'Viscera weight', 'Shell weight', 'Rings']
@@ -63,6 +60,20 @@ sex_dummies = pd.get_dummies(data['Sex'], prefix='sex', drop_first=True)
 data1 = pd.concat([sex_dummies, data], axis=1)
 
 data1 = data1.drop('Sex', axis=1)
+
+#%% DATA NORMALIZATION
+scaler = StandardScaler()
+
+data1 = pd.DataFrame(scaler.fit_transform(data1),columns=data1.columns)
+
+report1 = DQR(data1)
+report1
+#%% ADJUST "Height" TO A SIMILAR RANGE OF THE OTHER VARIABLES
+scalerH = MinMaxScaler(feature_range=(-2,4))
+data1['Height'] = scalerH.fit_transform(np.array(data1['Height']).reshape(-1,1))
+report1 = DQR(data1)
+report1
+
 #%% SPLIT TRAINING AND TESTING DATASETS
 X, y = data1.iloc[:,:-1], data1.iloc[:,-1]
 
