@@ -77,18 +77,31 @@ report1
 #%% SPLIT TRAINING AND TESTING DATASETS
 X, y = data1.iloc[:,:-1], data1.iloc[:,-1]
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 #%% TRAIN THE LINEAR MODEL
 model = LinearRegression()
 model.fit(X_train, y_train)
 y_train_predict = model.predict(X_train)
 y_test_predict = model.predict(X_test)
-rmse_train = np.sqrt(mean_squared_error(y_train, y_train_predict))
-rmse_test = np.sqrt(mean_squared_error(y_test, y_test_predict))
-print(f'El RMSE para el conjunto de entrenamiento es de {rmse_train:.5f}')
-print(f'El RMSE para el conjunto de prueba es de {rmse_test:.5f}')
-
+rmse_train = round(np.sqrt(mean_squared_error(y_train, y_train_predict)),5)
+rmse_test = round(np.sqrt(mean_squared_error(y_test, y_test_predict)),5)
+ref = np.linspace(min(y_test),max(y_test))
+fig = plt.figure(figsize=(10,8))
+plt.scatter(y_test,y_test_predict)
+plt.plot(ref,ref,'k--')
+plt.axis('square')
+plt.xlabel('y real')
+plt.ylabel('y estimada')
+plt.title("Regresion Lineal (todas las variables), RMSE=%f"%rmse_test)
+plt.grid()
+coef1 = pd.DataFrame()
+columns1 = X_train.columns
+coef1['Característica'] = columns1
+coef1['Coeficientes'] = model.coef_
+coef1.loc[len(coef1)] = ['Intercepción', model.intercept_]
+res = y_test - y_test_predict
+res.hist()
 #%% CORRELATION MATRIX
 Corr_matrix = data1.corr()
 plt.figure(figsize=(10,8))
@@ -98,7 +111,7 @@ plt.show()
 #%% FEATURE SELECTION
 #Eliminamos Lenght por diameter y shucked weight y viscera weight
 
-data2 = data1.drop(['sex_M', 'Lenght', 'Shucked weight', 'Viscera weight'], axis=1)
+data2 = data1.drop(['sex_M', 'Diameter', 'Shell weight','Rings'], axis=1)
 
 X2, y2 = data2.iloc[:,:-1], data2.iloc[:,-1]
 
@@ -109,10 +122,23 @@ model2 = LinearRegression()
 model2.fit(X2_train, y2_train)
 y2_train_predict = model2.predict(X2_train)
 y2_test_predict = model2.predict(X2_test)
-rmse_train2 = np.sqrt(mean_squared_error(y2_train, y2_train_predict))
-rmse_test2 = np.sqrt(mean_squared_error(y2_test, y2_test_predict))
-print(f'El RMSE para el conjunto de entrenamiento es de {rmse_train2:.5f}')
-print(f'El RMSE para el conjunto de prueba es de {rmse_test2:.5f}')
+rmse_train2 = round(np.sqrt(mean_squared_error(y2_train, y2_train_predict)),5)
+rmse_test2 = round(np.sqrt(mean_squared_error(y2_test, y2_test_predict)),5)
+fig = plt.figure(figsize=(10,8))
+plt.scatter(y2_test,y2_test_predict)
+plt.plot(ref,ref,'k--')
+plt.axis('square')
+plt.xlabel('y real')
+plt.ylabel('y estimada')
+plt.title("Regresion Lineal (selección de variables), RMSE=%f"%rmse_test2)
+plt.grid()
+coef2 = pd.DataFrame()
+columns2 = X2_train.columns
+coef2['Característica'] = columns2
+coef2['Coeficientes'] = model2.coef_
+coef2.loc[len(coef2)] = ['Intercepción', model2.intercept_]
+res2 = y_test - y_test_predict
+
 
 
 #%% dimensionality reduction by PCA
